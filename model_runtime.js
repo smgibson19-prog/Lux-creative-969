@@ -966,8 +966,8 @@ class TransformerEngine {
       `Sequence length ${pos + 1} exceeds maxSeqLen ${this._maxSeqLen}`
     );
     assert(
-      tokenId >= 0 && tokenId < this._vocab,
-      `Token ID ${tokenId} out of vocabulary range [0, ${this._vocab})`
+      Number.isInteger(tokenId) && tokenId >= 0 && tokenId < this._vocab,
+      `Token ID ${tokenId} must be an integer in vocabulary range [0, ${this._vocab})`
     );
 
     // Load token embedding
