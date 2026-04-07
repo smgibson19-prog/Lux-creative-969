@@ -395,7 +395,7 @@ async function loadModel(configUrl, manifestUrl, weightsUrl) {
   mustBePositiveInt(config.head_dim,          "config.head_dim");
   mustBePositiveInt(config.intermediate_size, "config.intermediate_size");
 
-  const layout     = buildLayoutInfo(config, manifest);
+  const layout     = buildLayoutInfo(config);
   const offsetUnit = manifest.metadata?.offset_unit || "elements";
 
   validateManifest(config, manifest, buffer, layout);
@@ -1148,7 +1148,7 @@ if (typeof module !== "undefined" && module.exports) {
  *     topK:        40,
  *     maxSeqLen:   512,
  *     profiling:   false,
- *     logger:      (msg) => console.log("[LUX]", msg)
+ *     logger:      (msg) => console.log("[model_runtime]", msg)
  *   });
  *
  *   // Tokenise your prompt however your tokeniser works:
