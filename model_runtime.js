@@ -322,7 +322,17 @@ function validateManifest(config, manifest, buffer, layout) {
     if (!range) return; // optional tensors
     const [start, end] = normalizeRange(range);
     const expectedElements = shape.reduce((a, b) => a * b, 1);
-    const actualElements   = end - start;
+    const actualUnits      = end - start;
+    const actualElements   = offsetUnit === "bytes"
+      ? (() => {
+          if (start % 4 !== 0 || end % 4 !== 0) {
+            throw new RangeError(
+              `Tensor "${path}": byte range [${start}, ${end}] must be 4-byte aligned for float32 weights`
+            );
+          }
+          return actualUnits / 4;
+        })()
+      : actualUnits;
 
     if (actualElements !== expectedElements) {
       throw new RangeError(
