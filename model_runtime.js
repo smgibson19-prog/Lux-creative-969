@@ -573,6 +573,14 @@ class TransformerEngine {
     this._headDim      = mustBePositiveInt(cfg.head_dim,          "head_dim");
     this._intermediate = mustBePositiveInt(cfg.intermediate_size, "intermediate_size");
 
+    assert(
+      this._numKvHeads <= this._numHeads,
+      `Config field "num_kv_heads" must be less than or equal to "num_heads", got num_kv_heads=${this._numKvHeads}, num_heads=${this._numHeads}`
+    );
+    assert(
+      this._numHeads % this._numKvHeads === 0,
+      `Config fields "num_heads" and "num_kv_heads" must satisfy num_heads % num_kv_heads === 0, got num_heads=${this._numHeads}, num_kv_heads=${this._numKvHeads}`
+    );
     this._qDim  = this._numHeads   * this._headDim;
     this._kvDim = this._numKvHeads * this._headDim;
     this._kvGroupSize = this._numHeads / this._numKvHeads; // heads per KV head (GQA)
