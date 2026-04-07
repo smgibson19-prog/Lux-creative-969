@@ -357,9 +357,32 @@ function validateManifest(config, manifest, buffer, layout) {
     checkTensor("final_norm", manifest.final_norm, [config.hidden_size]);
   }
 
+  if (!Array.isArray(manifest.layers)) {
+    throw new TypeError(
+      `Manifest field "layers" must be an array, got: ${JSON.stringify(manifest.layers)}`
+    );
+  }
+
+  if (manifest.layers.length !== config.num_layers) {
+    throw new RangeError(
+      `Manifest contains ${manifest.layers.length} layers but config.num_layers is ` +
+      `${config.num_layers}`
+    );
+  }
+
   manifest.layers.forEach((layer, i) => {
-    const o = layer.offsets;
     const p = `layers[${i}]`;
+    if (!layer || typeof layer !== "object") {
+      throw new TypeError(
+        `Manifest field "${p}" must be an object, got: ${JSON.stringify(layer)}`
+      );
+    }
+    if (!layer.offsets || typeof layer.offsets !== "object") {
+      throw new TypeError(
+        `Manifest field "${p}.offsets" must be an object, got: ${JSON.stringify(layer.offsets)}`
+      );
+    }
+    const o = layer.offsets;
     const s = layout.layerShapes;
     checkTensor(`${p}.rms_norm_1`, o.rms_norm_1, s.rms_norm_1);
     checkTensor(`${p}.wq`,         o.wq,         s.wq);
