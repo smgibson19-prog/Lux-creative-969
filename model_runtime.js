@@ -340,12 +340,12 @@ async function loadModel(configUrl, manifestUrl, weightsUrl) {
     fetchArrayBuffer(weightsUrl)
   ]);
 
-  const layout     = buildLayoutInfo(config, manifest);
+  const layout     = buildLayoutInfo(config);
   validateManifest(config, manifest, buffer, layout);
 
   const offsetUnit = manifest.metadata?.offset_unit || "elements";
 
-  // Memoised tensor factory — wraps makeFloat32View with a name for debugging.
+  // Memoized tensor factory — wraps makeFloat32View with a name for debugging.
   const tensorCache = new Map();
 
   /**
